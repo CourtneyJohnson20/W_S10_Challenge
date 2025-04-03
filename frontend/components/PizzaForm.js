@@ -11,6 +11,7 @@ export default function PizzaForm() {
   let custName = useSelector(st => st.orderState.fullName)
   let pizzaSize = useSelector(st => st.orderState.size)
   let pizzaToppings = useSelector(st => st.orderState.toppings)
+  let topChecked = useSelector(st => st.orderState.checked)
 
 
   const handleSizeChange = (evt) => {
@@ -90,23 +91,23 @@ export default function PizzaForm() {
 
       <div className="input-group">
         <label>
-          <input onChange={addToPizza} value={pizzaToppings} data-testid="checkPepperoni" name="1" type="checkbox" />
+          <input checked={pizzaToppings.includes("1")} onChange={addToPizza} value={pizzaToppings} data-testid="checkPepperoni" name="1" type="checkbox" />
           Pepperoni<br />
         </label>
         <label>
-          <input onChange={addToPizza} value={pizzaToppings}  data-testid="checkGreenpeppers" name="2" type="checkbox" />
+          <input checked={pizzaToppings.includes("2")} onChange={addToPizza} value={pizzaToppings}  data-testid="checkGreenpeppers" name="2" type="checkbox" />
           Green Peppers<br />
         </label>
         <label>
-          <input onChange={addToPizza} value={pizzaToppings}  data-testid="checkPineapple" name="3" type="checkbox" />
+          <input checked={pizzaToppings.includes("3")} onChange={addToPizza} value={pizzaToppings}  data-testid="checkPineapple" name="3" type="checkbox" />
           Pineapple<br />
         </label>
         <label>
-          <input onChange={addToPizza} value={pizzaToppings}  data-testid="checkMushrooms" name="4" type="checkbox" />
+          <input checked={pizzaToppings.includes("4")} onChange={addToPizza} value={pizzaToppings}  data-testid="checkMushrooms" name="4" type="checkbox" />
           Mushrooms<br />
         </label>
         <label>
-          <input onChange={addToPizza} value={pizzaToppings}  data-testid="checkHam" name="5" type="checkbox" />
+          <input checked={pizzaToppings.includes("5")} onChange={addToPizza} value={pizzaToppings}  data-testid="checkHam" name="5" type="checkbox" />
           Ham<br />
         </label>
       </div>
