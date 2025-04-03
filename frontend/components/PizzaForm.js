@@ -6,13 +6,11 @@ import { useCreateOrderMutation, useGetOrdersQuery } from '../state/orderApi'
 export default function PizzaForm() {
   const dispatch = useDispatch()
   const [createOrder, {isLoading: pendMessage, error: errMessage }] = useCreateOrderMutation()
-  const { data: orders, refetch } = useGetOrdersQuery();
+  const { data: orders = [], refetch } = useGetOrdersQuery();
 
   let custName = useSelector(st => st.orderState.fullName)
   let pizzaSize = useSelector(st => st.orderState.size)
   let pizzaToppings = useSelector(st => st.orderState.toppings)
-  let topChecked = useSelector(st => st.orderState.checked)
-
 
   const handleSizeChange = (evt) => {
     const selectedSize = evt.target.value;  
@@ -34,7 +32,7 @@ export default function PizzaForm() {
   
   const onSubmit = (evt) => {
     evt.preventDefault()
-    createOrder({fullName: custName, size: pizzaSize, toppings: [pizzaToppings]  })
+    createOrder({fullName: custName, size: pizzaSize, toppings: pizzaToppings  })
       .unwrap()
       .then(data => {
         console.log(data)
@@ -42,9 +40,6 @@ export default function PizzaForm() {
         resetForm()
       })
       .catch(err => {
-        console.log(err)
-        errMessage
-        debugger
       })
 
   }

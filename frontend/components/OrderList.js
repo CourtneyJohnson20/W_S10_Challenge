@@ -21,7 +21,7 @@ export default function OrderList() {
             return (
               <li key={ord.id}>
                 <div>
-                  {`${ord.customer} ordered a size ${ord.size} with ${toppings.length === 0 ? 'no' : toppings.length} topping${toppings.length === 1 ? '' : 's'}`}
+                  {`${ord.customer} ordered a size ${ord.size} with ${toppings.length > 0 ? toppings.length : "no toppings."} topping${toppings.length === 1 ? '' : 's'}`}
                 </div>
               </li>
             );
