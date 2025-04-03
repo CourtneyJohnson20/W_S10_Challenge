@@ -6,7 +6,7 @@ export const orderSlice = createSlice({
     fullName: '',
     size: '',
     toppings: [],
-    sizeFilter: ''
+    sizeFilter: '',
   },
   reducers: {
     sizeValue: (state, action) => {
@@ -25,9 +25,13 @@ export const orderSlice = createSlice({
         state.toppings = [...state.toppings, value]
       }
     },
-    resetState: (state) => {
-      state = state.initialState
+    resetState(state) {
+      state.fullName = '';
+      state.size = '';
+      state.toppings = [];  // Reset toppings
+      state.sizeFilter = '';
     }
+    
 
   },
 });

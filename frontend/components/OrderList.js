@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { useGetOrdersQuery } from '../state/orderApi';
+import { useSelector } from 'react-redux';
 
 export default function OrderList() {
   const [selectedSize, setSelectedSize] = useState('All');
@@ -20,7 +21,7 @@ export default function OrderList() {
             return (
               <li key={ord.id}>
                 <div>
-                  {`${ord.customer} ordered a size ${ord.size} with ${toppings.length > 0 ? toppings.join(", ") : "no toppings."}`}
+                  {`${ord.customer} ordered a size ${ord.size} with ${toppings.length === 0 ? 'no' : toppings.length} topping${toppings.length === 1 ? '' : 's'}`}
                 </div>
               </li>
             );

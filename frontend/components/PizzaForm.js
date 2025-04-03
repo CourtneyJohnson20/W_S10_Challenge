@@ -1,57 +1,59 @@
-import React from 'react';
-import { useSelector, useDispatch } from 'react-redux';
-import { sizeValue, customer, changeToppings, resetState } from '../state/orderSlice';
-import { useCreateOrderMutation, useGetOrdersQuery } from '../state/orderApi';
+import React from 'react'
+import { useSelector, useDispatch } from 'react-redux'
+import { setFormValue, sizeValue, customer, changeToppings, resetState } from '../state/orderSlice'
+import { useCreateOrderMutation, useGetOrdersQuery } from '../state/orderApi'
 
 export default function PizzaForm() {
-  const dispatch = useDispatch();
-  const [createOrder, { isLoading: pendMessage, isFetching: refreshOrder, error: errMessage }] = useCreateOrderMutation();
+  const dispatch = useDispatch()
+  const [createOrder, {isLoading: pendMessage, error: errMessage }] = useCreateOrderMutation()
+  const { data: orders, refetch } = useGetOrdersQuery();
 
-  const { refetch } = useGetOrdersQuery();  // Access refetch function here
+  let custName = useSelector(st => st.orderState.fullName)
+  let pizzaSize = useSelector(st => st.orderState.size)
+  let pizzaToppings = useSelector(st => st.orderState.toppings)
 
-  let custName = useSelector((st) => st.orderState.fullName);
-  let pizzaSize = useSelector((st) => st.orderState.size);
-  let pizzaToppings = useSelector((st) => st.orderState.toppings);
 
   const handleSizeChange = (evt) => {
-    const selectedSize = evt.target.value;
-    dispatch(sizeValue({ value: selectedSize }));
-  };
+    const selectedSize = evt.target.value;  
+    dispatch(sizeValue({ value: selectedSize }))  
+  }
 
   const onChange = (evt) => {
-    const customerName = evt.target.value;
-    dispatch(customer({ value: customerName }));
-  };
-
+    const customerName = evt.target.value
+    dispatch(customer({value: customerName}))
+  }
   const addToPizza = (evt) => {
     const toppingName = evt.target.name;
+    console.log("Adding topping:", toppingName);  // Log the topping being added
     dispatch(changeToppings({ value: toppingName }));
   };
-
   const resetForm = () => {
-    dispatch(sizeValue({ value: '' }));
-    dispatch(customer({ value: '' }));
-    dispatch(changeToppings({ value: [] }));
+    dispatch(resetState());  // This will reset the entire form state, including toppings
   };
-
+  
   const onSubmit = (evt) => {
-    evt.preventDefault();
-    createOrder({ fullName: custName, size: pizzaSize, toppings: pizzaToppings })
+    evt.preventDefault()
+    createOrder({fullName: custName, size: pizzaSize, toppings: [pizzaToppings]  })
       .unwrap()
-      .then((data) => {
-        refetch();  // Call refetch to refresh the orders after creation
-        dispatch(resetState());
+      .then(data => {
+        console.log(data)
+        refetch()
+        resetForm()
       })
-      .catch((err) => {
-        console.log(err);
-      });
-  };
+      .catch(err => {
+        console.log(err)
+        errMessage
+        debugger
+      })
+
+  }
+  
 
   return (
     <form onSubmit={onSubmit}>
       <h2>Pizza Form</h2>
-      {(pendMessage || refreshOrder) && <div className="pending">Order in progress...</div>}
-      {errMessage && <div className="failure">Order failed: {errMessage.data.message}</div>}
+      {pendMessage && <div className='pending'>Order in progress...</div>}
+      {errMessage && <div className='failure'>Order failed: {errMessage.data.message}</div>}
 
       <div className="input-group">
         <div>
@@ -61,6 +63,7 @@ export default function PizzaForm() {
             id="fullName"
             name="fullName"
             onChange={onChange}
+            value={custName}
             placeholder="Type full name"
             type="text"
           />
@@ -74,7 +77,8 @@ export default function PizzaForm() {
             data-testid="sizeSelect"
             id="size"
             name="size"
-            onChange={handleSizeChange}
+            value={pizzaSize}
+            onChange={handleSizeChange}  // Use onChange to capture the selection
           >
             <option value="">----Choose size----</option>
             <option value="S">Small</option>
@@ -86,28 +90,28 @@ export default function PizzaForm() {
 
       <div className="input-group">
         <label>
-          <input onChange={addToPizza} data-testid="checkPepperoni" name="1" type="checkbox" />
+          <input onChange={addToPizza} value={pizzaToppings} data-testid="checkPepperoni" name="1" type="checkbox" />
           Pepperoni<br />
         </label>
         <label>
-          <input onChange={addToPizza} data-testid="checkGreenpeppers" name="2" type="checkbox" />
+          <input onChange={addToPizza} value={pizzaToppings}  data-testid="checkGreenpeppers" name="2" type="checkbox" />
           Green Peppers<br />
         </label>
         <label>
-          <input onChange={addToPizza} data-testid="checkPineapple" name="3" type="checkbox" />
+          <input onChange={addToPizza} value={pizzaToppings}  data-testid="checkPineapple" name="3" type="checkbox" />
           Pineapple<br />
         </label>
         <label>
-          <input onChange={addToPizza} data-testid="checkMushrooms" name="4" type="checkbox" />
+          <input onChange={addToPizza} value={pizzaToppings}  data-testid="checkMushrooms" name="4" type="checkbox" />
           Mushrooms<br />
         </label>
         <label>
-          <input onChange={addToPizza} data-testid="checkHam" name="5" type="checkbox" />
+          <input onChange={addToPizza} value={pizzaToppings}  data-testid="checkHam" name="5" type="checkbox" />
           Ham<br />
         </label>
       </div>
 
       <input data-testid="submit" type="submit" />
     </form>
-  );
+  )
 }
